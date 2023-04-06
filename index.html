@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Methods JavaScript Request Server</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <button id="getId" type="button">Get Data</button>
+    <button id="postId" type="button">Post Data</button>
+    <script>
+        /**** fetch method ****/
+        function getData(url, method, data) {
+            return fetch(url, {
+                method: method,
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then((data) => data.json());
+        }
+
+        document.querySelector("#getId").addEventListener("click", function() {
+            getData("https://jsonplaceholder.typicode.com/posts/1", "GET").then((data) => {
+                console.log(data)
+            })
+        })
+
+        document.querySelector("#postId").addEventListener("click", function() {
+            getData("https://jsonplaceholder.typicode.com/posts", "POST", {
+                body: "amir javanmir",
+                id: 1000,
+                title: "my title",
+                userId: 10
+            }).then((data) => {
+                console.log(data)
+            })
+        })
+
+        /**** promise and XMLHttpRequest method ****/
+        let getData = (url, method, data) => {
+            return new Promise(function(resolve, reject) {
+                let ajax = new XMLHttpRequest();
+                ajax.open(method, url);
+                ajax.responseType = "json";
+                ajax.setRequestHeader("Content-Type", "application/json")
+                ajax.send(data ? JSON.stringify(data) : null);
+                ajax.onload = () => {
+                    resolve(ajax.response)
+                }
+                ajax.onerror = () => {
+                    reject("error")
+                }
+            })
+        }
+
+        document.querySelector("#getId").addEventListener("click", function() {
+            getData("https://jsonplaceholder.typicode.com/posts/1", "GET").then((data) => {
+                console.log(data);
+            })
+        })
+
+        document.querySelector("#postId").addEventListener("click", function() {
+            getData("https://jsonplaceholder.typicode.com/posts", "POST", {
+                body: "amir javanmir",
+                id: 1000,
+                title: "my title",
+                userId: 10
+            }).then((data) => {
+                console.log(data)
+            })
+        })
+
+        /**** axios method ****/
+        async function getData(url, method, data) {
+            let res = await (method == "GET") ? axios.get(url) : axios.post(url, data);
+            return res
+        }
+
+        document.querySelector("#getId").addEventListener("click", function() {
+            getData("https://jsonplaceholder.typicode.com/posts/1", "GET")
+                .then((data) => {
+                    console.log(data.data)
+                });;
+        })
+
+        document.querySelector("#postId").addEventListener("click", function() {
+            getData("https://jsonplaceholder.typicode.com/posts", "POST", {
+                    body: "amir javanmir",
+                    id: 1000,
+                    title: "my title",
+                    userId: 10
+                })
+                .then((data) => {
+                    console.log(data.data)
+                })
+        })
+    </script>
+</body>
+
+</html>
